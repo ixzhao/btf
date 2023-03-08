@@ -229,21 +229,9 @@ jobs:
 
           # Compile kernel.
           ./compile.sh BUILD_ONLY=default KERNEL_CONFIGURE=no BUILD_MINIMAL=no BUILD_DESKTOP=no BOARD="$BOARD_NAME" BRANCH="$BRANCH" RELEASE=jammy
-      - name: Extract vmlinux
-        id: vmlinux
-        run: |
-          cd output/debs/
-          fname=$(ls --format single-column kernel-*.tar | head -n 1)
-          fpath=$(realpath ${fname})
-          echo "FILE_DISPLAY_NAME=${BOARD_FAMILY}-${fname}" >> $GITHUB_OUTPUT
-          echo "FILEPATH=${fpath}" >> $GITHUB_OUTPUT
-
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+      - name: upload result
+        uses: actions/upload-artifact@v1
         with:
-          repo_name: daeuniverse/armbian-kernel-btf-dist
-          repo_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          file: ${{ steps.vmlinux.outputs.FILEPATH }}
-          asset_name: ${{ steps.vmlinux.outputs.FILE_DISPLAY_NAME }}
-          tag: ${{ needs.generate_release_info.outputs.release_name }}
-          overwrite: true
+          name: output
+          path: ${{ github.workspace }}/output
+
