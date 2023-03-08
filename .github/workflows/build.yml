@@ -53,7 +53,7 @@ jobs:
           CONFIG_DEBUG_INFO_BTF=y" >> config/kernel/linux-"$BOARD_FAMILY"-"$BRANCH".config
 
           # Compile kernel.
-          ./compile.sh BUILD_ONLY=default KERNEL_CONFIGURE=no BUILD_MINIMAL=no BUILD_DESKTOP=no BOARD="$BOARD_NAME" BRANCH="$BRANCH" RELEASE=jammy
+          ./compile.sh BUILD_ONLY=default KERNEL_ONLY=no KERNEL_CONFIGURE=no BUILD_MINIMAL=no BUILD_DESKTOP=no BOARD="$BOARD_NAME" BRANCH="$BRANCH" RELEASE=jammy
       - name: upload result
         uses: actions/upload-artifact@v1
         with:
