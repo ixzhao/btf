@@ -1,34 +1,26 @@
 # This is a basic workflow to help you get started with Actions
 
 name: CI
-
 on:
   workflow_dispatch:
-
 jobs:
-
   build:
     strategy:
         matrix:
           include:
-            
             - boardfamily: meson64
               branch: current
               representative: aml-s9xx-box
-           
         fail-fast: false
     runs-on: ubuntu-22.04
     env:
       BOARD_FAMILY: ${{ matrix.boardfamily }}
       BRANCH: ${{ matrix.branch }}
       BOARD_NAME: ${{ matrix.representative }}
-
     steps:
-
       - uses: actions/checkout@v3
         with:
           repository: armbian/build
-      
       - uses: actions/checkout@v3
         with:
           path: utils
@@ -39,21 +31,18 @@ jobs:
           cp utils/* ./
 
           # Remove disabling DEBUG_INFO.
-          sed -i 's/run_kernel_make olddefconfig/run_kernel_make KCONFIG_ALLCONFIG=.config alldefconfig/g' lib/functions/compilation/kernel-config.sh
           sed -i '/kernel_config_set_n DEBUG_INFO/d' lib/functions/compilation/armbian-kernel.sh
-
-          # Trip modulues debug info.
-          sed -i 's/run_kernel_make_long_running/run_kernel_make_long_running INSTALL_MOD_STRIP=1/g' lib/functions/compilation/kernel.sh
 
           # Enable BTF.
           sed -i '/CONFIG_DEBUG_INFO/d' config/kernel/linux-"$BOARD_FAMILY"-"$BRANCH".config
           echo "CONFIG_DEBUG_INFO=y
-          CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
-          CONFIG_DEBUG_INFO_COMPRESSED_ZLIB=y
+          CONFIG_DEBUG_INFO_DWARF4=y
+          CONFIG_PAHOLE_HAS_SPLIT_BTF=y
+          CONFIG_DEBUG_INFO_BTF_MODULES=y
           CONFIG_DEBUG_INFO_BTF=y" >> config/kernel/linux-"$BOARD_FAMILY"-"$BRANCH".config
 
           # Compile kernel.
-          ./compile.sh BUILD_ONLY=default KERNEL_ONLY=no KERNEL_CONFIGURE=no BUILD_MINIMAL=no BUILD_DESKTOP=no BOARD="$BOARD_NAME" BRANCH="$BRANCH" RELEASE=jammy
+          ./compile.sh BUILD_ONLY=default KERNEL_ONLY=no KERNEL_CONFIGURE=no BUILD_MINIMAL=no BUILD_DESKTOP=no BOARD="$BOARD_NAME" BRANCH="$BRANCH" RELEASE=jammy INSTALL_HEADERS=yes KERNEL_GIT=SHALLOW 
       - name: upload result
         uses: actions/upload-artifact@v1
         with:
