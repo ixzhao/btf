@@ -28,7 +28,7 @@ jobs:
           # Copy helper files.
           cp -r utils/* ./
           # Compile kernel.
-          ./compile.sh docker BUILD_ONLY=default KERNEL_ONLY=no KERNEL_CONFIGURE=no BUILD_MINIMAL=no BUILD_DESKTOP=no BOARD="$BOARD_NAME" BRANCH="$BRANCH" RELEASE=jammy INSTALL_HEADERS=yes
+          sudo ./compile.sh BUILD_ONLY=default KERNEL_ONLY=no KERNEL_CONFIGURE=no BUILD_MINIMAL=no BUILD_DESKTOP=no BOARD="$BOARD_NAME" BRANCH="$BRANCH" RELEASE=jammy INSTALL_HEADERS=yes
       - name: upload result
         uses: actions/upload-artifact@v1
         with:
