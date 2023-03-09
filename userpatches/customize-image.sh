@@ -21,8 +21,8 @@ Main() {
 	# 安装常用依赖
 	apt update
 	apt install -y apt-transport-https
-	sed -i 's/http://ports.ubuntu.com/https://mirrors.ustc.edu.cn/ubuntu-ports/g' /etc/apt/sources.list
-	apt update
+	#sed -i 's/http://ports.ubuntu.com/https://mirrors.ustc.edu.cn/ubuntu-ports/g' /etc/apt/sources.list
+	#apt update
 	# docker
 	apt install -y apparmor
 	apt install -y ca-certificates curl gnupg lsb-release libelf-dev
